@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate QR Code</title>
+  <style> 
+    body {
+      font-family: Arial, sans-serif;
+      background-color:whitesmoke;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .container {
+      background:lightslategray;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h2 {
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      color: black;
+      text-align: center;
+    }
+    
+    .form-container {
+      border: 2px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: lightgray;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content vertically */
+      gap: 100px; /* Space between input and button */
+    
+    }
+
+    
+    .input {
+      padding: 10px;
+      font-size: Large;
+      color:black;
+      border: 1px solid black;
+      border-radius: 10px;
+      width: 80%;
+      height: 25%;
+      background-color:ghostwhite;
+    
+    }
+    
+    button {
+      padding: 10px 15px;
+      font-size: x-large;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 100px;
+      height: 40%;
+      width: 50%;
+      margin-top: 20px;
+
+      
+    }
+    
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    .qr-container {
+      margin-top: 30px;
+    }
+    
+    #qrCodeImage {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Generate QR Code for Your Grocery List</h2>
+    <div class="form-container">
+      <form id="qrForm" class="form">
+        <textarea id="text" id="qrData" class="input" placeholder="Enter grocery list" required></textarea>
+        <button type="submit">Generate QR Code</button>
+      </form>
+    </div>
+
+    <div id="qrCodeContainer" class="qr-container">
+      <img id="qrCodeImage" src="" alt="QR Code" style="display: none;">
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('qrForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const qrData = document.getElementById('qrData').value;
+
+      // Send a POST request to the backend API to generate the QR code
+      const response = await fetch('http://localhost:5000/generate-qr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: qrData }),
+      });
+
+      const result = await response.json();
+
+      // If QR code generated successfully, show it
+      if (result.success) {
+        const qrCodeImage = document.getElementById('qrCodeImage');
+        qrCodeImage.src = result.qrCodeImage;
+        qrCodeImage.style.display = 'block';
+      } else {
+        alert(result.message);
+      }
+    });
+  </script>
+</body>
+</html>

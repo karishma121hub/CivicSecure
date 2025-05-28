@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Registration</title>
+  <link rel="stylesheet" href="vendor.css">
+</head>
+<body>
+  <header>
+    <h1>Vendor Registration Form</h1>
+  </header>
+  <main>
+    <form id="vendor-form" class="form-container">
+      <label for="business-name">Business Name:</label>
+      <input type="text" id="business-name" name="businessName" placeholder="Enter your business name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+      <label for="category">Product Category:</label>
+      <select id="category" name="category" required>
+        <option value="">Select a category</option>
+        <option value="fashion">Fashion</option>
+        <option value="food">Food</option>
+        <option value="beauty">Beauty</option>
+        
+      </select>
+
+      <label for="description">Business Description:</label>
+      <textarea id="description" name="description" placeholder="Describe your business" rows="5" required></textarea>
+
+      <button type="submit">Register</button>
+    </form>
+    <p id="success-message" style="display: none; color: green; margin-top: 20px;">Registration successful!</p>
+    <p id="error-message" style="display: none; color: red; margin-top: 20px;">Error during registration. Try again!</p>
+  </main>
+
+  <script src="vendor.js"></script>
+</body>
+</html>
