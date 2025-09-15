@@ -1,78 +1,102 @@
 import React from "react";
-import { 
-  FaHome, 
-  FaFileAlt, 
-  FaChartBar, 
-  FaInfoCircle, 
-  FaComments, 
-  FaIdCard,
-  FaUser,
-  FaSignOutAlt
-} from "react-icons/fa";
+import { FaHome, FaFileAlt, FaUser, FaIdCard, FaSearch, FaInfoCircle, FaUsers, FaSignOutAlt } from "react-icons/fa";
 
-const menuItems = [
-  { id: "dashboard", label: "Dashboard", icon: FaHome },
-  { id: "file-complaint", label: "File Complaint", icon: FaFileAlt },
-  { id: "track-status", label: "Track Status", icon: FaChartBar },
-  { id: "info-hub", label: "Info Hub", icon: FaInfoCircle },
-  { id: "community", label: "Community", icon: FaComments },
-  { id: "aadhaar-verify", label: "Aadhaar Verify", icon: FaIdCard },
-  { id: "profile", label: "Profile", icon: FaUser } // Added profile back to menuItems
-];
+const Sidebar = ({ currentPage, setCurrentPage, sidebarOpen, setSidebarOpen, user, onLogout }) => {
+  const menuItems = [
+    { id: "dashboard", label: "Dashboard", icon: FaHome },
+    { id: "file-complaint", label: "File Complaint", icon: FaFileAlt },
+    { id: "track-status", label: "Track Status", icon: FaSearch },
+    { id: "profile", label: "Profile", icon: FaUser },
+    { id: "aadhaar-verify", label: "Verify Aadhaar", icon: FaIdCard },
+    { id: "info-hub", label: "Info Hub", icon: FaInfoCircle },
+    { id: "community", label: "Community", icon: FaUsers },
+  ];
 
-export default function Sidebar({ currentPage, setCurrentPage, sidebarOpen, setSidebarOpen, onLogout }) {
+  const handleMenuClick = (pageId) => {
+    setCurrentPage(pageId);
+    setSidebarOpen(false); // Close sidebar on mobile after selection
+  };
+
   return (
-    <aside
-      className={`sidebar fixed top-0 left-0 z-40 w-72 h-screen transition-transform ease-in-out duration-300 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } sm:translate-x-0`}
-      aria-label="Sidebar"
-    >
-      <div className="p-8 border-b border-sidebar-border">
-        <h1 className="text-4xl font-bold text-text-primary mb-2">CivicSecure</h1>
-        <p className="text-text-primary text-base">Citizen Grievance Hub</p>
-      </div>
+    <>
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`sidebar fixed sm:relative z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0 transition-transform duration-300 ease-in-out`}>
+        {/* Header */}
+        <div className="p-6 border-b border-green-200 dark:border-green-800">
+          <h2 className="text-2xl font-bold text-green-800 dark:text-green-400">
+            CiciSecure
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            Civic Management System
+          </p>
+        </div>
 
-      <ul className="menu p-6 space-y-3 text-lg">
-        {menuItems.map(({ id, label, icon: Icon }) => (
-          <li key={id}>
-            <button
-              onClick={() => {
-                setCurrentPage(id);
-                if (sidebarOpen) setSidebarOpen(false);
-              }}
-              className={`flex items-center w-full p-4 rounded-lg font-semibold transition
-                ${currentPage === id
-                  ? "bg-black text-white shadow-lg"
-                  : "text-green-800 hover:bg-black hover:text-white"
-                }
-              `}
-              aria-current={currentPage === id ? "page" : undefined}
-            >
-              <Icon
-                className={`text-2xl mr-4 ${
-                  currentPage === id ? "text-white" : "text-green-800 group-hover:text-white"
-                }`}
-              />
-              <span className="text-lg">{label}</span>
-            </button>
-          </li>
-        ))}
+        {/* User info */}
+        <div className="p-4 border-b border-green-200 dark:border-green-800">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+              <span className="text-white font-semibold">
+                {user?.name?.charAt(0) || user?.phone?.slice(-2) || 'U'}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                {user?.name || 'User'}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                +91 {user?.phone || 'Phone'}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        {/* Logout Button - Separate from regular menu items */}
-        <li className="mt-6 pt-3 border-t border-sidebar-border">
+        {/* Navigation */}
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = currentPage === item.id;
+              
+              return (
+                <li key={item.id}>
+                  <button
+                    onClick={() => handleMenuClick(item.id)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-green-500 text-white'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Logout button */}
+        <div className="p-4 border-t border-green-200 dark:border-green-800">
           <button
-            onClick={() => {
-              if (sidebarOpen) setSidebarOpen(false);
-              if (onLogout) onLogout();
-            }}
-            className="flex items-center w-full p-4 rounded-lg font-semibold text-red-600 hover:bg-red-600 hover:text-white transition"
+            onClick={onLogout}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
-            <FaSignOutAlt className="text-2xl mr-4" />
-            <span className="text-lg">Logout</span>
+            <FaSignOutAlt className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
           </button>
-        </li>
-      </ul>
-    </aside>
+        </div>
+      </div>
+    </>
   );
-}
+};
+
+export default Sidebar;
